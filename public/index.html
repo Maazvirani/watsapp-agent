@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>24/7 WhatsApp Business AI Control Center</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0f172a;
+      --card-dark: #1e293b;
+      --border-dark: #334155;
+      --accent-green: #25d366;
+      --accent-teal: #128c7e;
+      --accent-blue: #3b82f6;
+      --accent-yellow: #f59e0b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      margin: 0;
+      padding: 20px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-dark);
+      margin-bottom: 24px;
+    }
+    .logo-area { display: flex; align-items: center; gap: 12px; }
+    .logo-icon {
+      width: 44px;
+      height: 44px;
+      background: var(--accent-green);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: white;
+    }
+    h1 { font-size: 20px; margin: 0; }
+    .status-pill {
+      background: rgba(37, 211, 102, 0.15);
+      color: var(--accent-green);
+      border: 1px solid var(--accent-green);
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .pulse {
+      width: 8px;
+      height: 8px;
+      background: var(--accent-green);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--accent-green);
+      animation: blink 1.5s infinite;
+    }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: var(--card-dark);
+      border: 1px solid var(--border-dark);
+      border-radius: 10px;
+      padding: 16px;
+    }
+    .stat-title { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .stat-value { font-size: 24px; font-weight: 700; margin-top: 8px; }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 1024px) {
+      .main-grid { grid-template-columns: 1fr; }
+    }
+
+    /* WhatsApp Chat Simulator */
+    .whatsapp-sim {
+      background: var(--card-dark);
+      border: 1px solid var(--border-dark);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      height: 650px;
+      overflow: hidden;
+    }
+    .sim-header {
+      background: #075e54;
+      color: white;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .sim-avatar { width: 36px; height: 36px; background: white; color: #075e54; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+    .sim-body {
+      flex: 1;
+      background: #0b141a;
+      background-image: radial-gradient(#1e293b 1px, transparent 0);
+      background-size: 20px 20px;
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .msg { max-width: 85%; padding: 10px 14px; border-radius: 8px; font-size: 13.5px; line-height: 1.5; word-break: break-word; }
+    .msg-user { background: #005c4b; color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
+    .msg-assistant { background: #202c33; color: white; align-self: flex-start; border-bottom-left-radius: 2px; }
+    .sim-input-area {
+      padding: 12px;
+      background: #202c33;
+      display: flex;
+      gap: 8px;
+    }
+    .sim-input {
+      flex: 1;
+      background: #2a3942;
+      border: none;
+      color: white;
+      padding: 10px 14px;
+      border-radius: 20px;
+      outline: none;
+      font-size: 14px;
+    }
+    .sim-send {
+      background: var(--accent-green);
+      border: none;
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    /* Right Side Panels */
+    .panels-container { display: flex; flex-direction: column; gap: 24px; }
+    .panel {
+      background: var(--card-dark);
+      border: 1px solid var(--border-dark);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .panel-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 0 0 16px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+    th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border-dark); }
+    th { color: var(--text-muted); font-weight: 500; background: #162032; }
+
+    .badge-pending { background: rgba(245, 158, 11, 0.2); color: var(--accent-yellow); border: 1px solid var(--accent-yellow); padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+    .badge-confirmed { background: rgba(34, 197, 94, 0.2); color: #22c55e; border: 1px solid #22c55e; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+
+    .btn-action {
+      background: var(--accent-blue);
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-action:hover { opacity: 0.9; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo-area">
+      <div class="logo-icon">💬</div>
+      <div>
+        <h1>WhatsApp Business AI Control Center</h1>
+        <small style="color: var(--text-muted);">24/7 Autonomous Customer & Order Management</small>
+      </div>
+    </div>
+    <div class="status-pill">
+      <div class="pulse"></div>
+      <span id="statusText">24/7 Active & Listening</span>
+    </div>
+  </header>
+
+  <!-- Metrics Grid -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-title">Total Orders Placed</div>
+      <div class="stat-value" id="statOrders">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-title">Pending Email Confirmations</div>
+      <div class="stat-value" style="color: var(--accent-yellow);" id="statPending">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-title">Confirmed Orders</div>
+      <div class="stat-value" style="color: var(--accent-green);" id="statConfirmed">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-title">Emails Dispatched</div>
+      <div class="stat-value" style="color: var(--accent-blue);" id="statEmails">0</div>
+    </div>
+  </div>
+
+  <!-- Main Content Layout -->
+  <div class="main-grid">
+    
+    <!-- WhatsApp Live Simulator -->
+    <div class="whatsapp-sim">
+      <div class="sim-header">
+        <div class="sim-avatar">AI</div>
+        <div>
+          <div style="font-weight: 600; font-size: 14px;">WhatsApp AI Assistant</div>
+          <small style="opacity: 0.8; font-size: 11px;">Always Online 24/7</small>
+        </div>
+      </div>
+      <div class="sim-body" id="chatBody">
+        <div class="msg msg-assistant">
+          Hello! 👋 I am your 24/7 WhatsApp AI Business Assistant.<br><br>
+          Try typing: <strong>"Hi, I want to order a Laptop, my email is customer@gmail.com"</strong> to test the order confirmation email and Google Sheets sync flow!
+        </div>
+      </div>
+      <div class="sim-input-area">
+        <input type="text" id="simInput" class="sim-input" placeholder="Type a WhatsApp message..." onkeypress="handleKey(event)">
+        <button class="sim-send" onclick="sendSimMessage()">➤</button>
+      </div>
+    </div>
+
+    <!-- Live Data Panels -->
+    <div class="panels-container">
+
+      <!-- Orders Panel -->
+      <div class="panel">
+        <div class="panel-title">
+          <span>📦 Customer Orders</span>
+          <small style="color: var(--text-muted); font-size: 12px;">Real-Time Order Log</small>
+        </div>
+        <div style="overflow-x: auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Order #</th>
+                <th>Customer</th>
+                <th>Email</th>
+                <th>Items</th>
+                <th>Amount</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="ordersTableBody">
+              <tr><td colspan="6" style="text-align: center; color: var(--text-muted);">No orders placed yet. Test via simulator on the left!</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Gmail Sent Confirmation Emails Panel -->
+      <div class="panel">
+        <div class="panel-title">
+          <span>✉️ Gmail Sent Emails & Action Link</span>
+          <small style="color: var(--text-muted); font-size: 12px;">Click confirmation link to test</small>
+        </div>
+        <div style="overflow-x: auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Order #</th>
+                <th>Recipient</th>
+                <th>Subject</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="emailsTableBody">
+              <tr><td colspan="4" style="text-align: center; color: var(--text-muted);">No confirmation emails sent yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Google Sheets Live Mirror Panel -->
+      <div class="panel">
+        <div class="panel-title">
+          <span>📊 Google Sheets Auto-Sync Mirror</span>
+          <small style="color: var(--text-muted); font-size: 12px;">Automatically appends rows</small>
+        </div>
+        <div style="overflow-x: auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Sheet Action</th>
+                <th>Row Data Payload</th>
+                <th>Sync Time</th>
+              </tr>
+            </thead>
+            <tbody id="sheetsTableBody">
+              <tr><td colspan="3" style="text-align: center; color: var(--text-muted);">Google Sheets is waiting for new orders...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    const customerPhone = '+14155552671';
+    const customerName = 'Alex Johnson';
+
+    async function loadDashboard() {
+      try {
+        const statsRes = await fetch('/api/dashboard/stats');
+        const stats = await statsRes.json();
+
+        document.getElementById('statOrders').innerText = stats.totalOrders;
+        document.getElementById('statPending').innerText = stats.pendingOrders;
+        document.getElementById('statConfirmed').innerText = stats.confirmedOrders;
+        document.getElementById('statEmails').innerText = stats.sentEmailsCount;
+
+        // Load Orders
+        const ordersRes = await fetch('/api/dashboard/orders');
+        const orders = await ordersRes.json();
+        renderOrders(orders);
+
+        // Load Emails
+        const emailsRes = await fetch('/api/dashboard/emails');
+        const emails = await emailsRes.json();
+        renderEmails(emails);
+
+        // Load Sheets
+        const sheetsRes = await fetch('/api/dashboard/sheets');
+        const sheets = await sheetsRes.json();
+        renderSheets(sheets);
+      } catch (err) {
+        console.error('Error fetching dashboard data:', err);
+      }
+    }
+
+    function renderOrders(orders) {
+      const tbody = document.getElementById('ordersTableBody');
+      if (!orders || orders.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted);">No orders placed yet. Test via simulator!</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = orders.map(o => `
+        <tr>
+          <td><strong>#${o.order_number}</strong></td>
+          <td>${o.customer_name}<br><small style="color:var(--text-muted);">${o.customer_phone}</small></td>
+          <td>${o.customer_email}</td>
+          <td>${o.order_items}</td>
+          <td>$${o.total_amount.toFixed(2)}</td>
+          <td>
+            <span class="${o.status === 'CONFIRMED' ? 'badge-confirmed' : 'badge-pending'}">
+              ${o.status}
+            </span>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function renderEmails(emails) {
+      const tbody = document.getElementById('emailsTableBody');
+      if (!emails || emails.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">No confirmation emails sent yet.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = emails.map(e => `
+        <tr>
+          <td>#${e.order_id}</td>
+          <td>${e.recipient}</td>
+          <td>${e.subject}</td>
+          <td>
+            <a href="${e.confirmation_link}" target="_blank" class="btn-action">
+              🔗 Click Confirm Order Link
+            </a>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function renderSheets(sheets) {
+      const tbody = document.getElementById('sheetsTableBody');
+      if (!sheets || sheets.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-muted);">Google Sheets mirror is ready.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = sheets.map(s => `
+        <tr>
+          <td><strong style="color:var(--accent-green);">${s.action}</strong></td>
+          <td><code style="font-size:11px; color:#e2e8f0;">${s.row_data}</code></td>
+          <td><small style="color:var(--text-muted);">${new Date(s.synced_at).toLocaleTimeString()}</small></td>
+        </tr>
+      `).join('');
+    }
+
+    async function sendSimMessage() {
+      const input = document.getElementById('simInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      input.value = '';
+
+      // Append User message to UI
+      const chatBody = document.getElementById('chatBody');
+      chatBody.innerHTML += `<div class="msg msg-user">${escapeHtml(text)}</div>`;
+      chatBody.scrollTop = chatBody.scrollHeight;
+
+      try {
+        const res = await fetch('/api/sim/whatsapp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone: customerPhone, name: customerName, message: text }),
+        });
+        const data = await res.json();
+
+        // Append Assistant reply to UI
+        const formattedReply = escapeHtml(data.reply).replace(/\*(.*?)\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+        chatBody.innerHTML += `<div class="msg msg-assistant">${formattedReply}</div>`;
+        chatBody.scrollTop = chatBody.scrollHeight;
+
+        // Refresh dashboard tables
+        loadDashboard();
+      } catch (err) {
+        console.error('Simulator error:', err);
+      }
+    }
+
+    function handleKey(e) {
+      if (e.key === 'Enter') sendSimMessage();
+    }
+
+    function escapeHtml(text) {
+      return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    // Auto-refresh dashboard stats every 3 seconds
+    setInterval(loadDashboard, 3000);
+    loadDashboard();
+  </script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: whatsapp-business-ai
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: node dist/server.js
+    envVars:
+      - key: PORT
+        value: 3000
+      - key: NODE_ENV
+        value: production
+      - key: ENABLE_MOCK_MODE
+        value: true
